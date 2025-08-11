@@ -515,8 +515,19 @@
             
             // Set current date as default
             const dateInput = document.getElementById('date');
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
+            // Set current date as default - use a function to ensure we always get fresh date
+            function getCurrentDate() {
+                // Create a new date object with the current local time
+                const now = new Date();
+                
+                // Format the date as YYYY-MM-DD for the date input
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                
+                return `${year}-${month}-${day}`;
+            }
+            dateInput.value = getCurrentDate();
             
             // Toggle between dashboard and health data form
             dashboardLink.addEventListener('click', function(e) {
@@ -533,6 +544,9 @@
                 e.preventDefault();
                 dashboardOverview.classList.add('hidden');
                 healthDataContent.classList.add('active');
+                
+                // Always set the date to current date when showing the form
+                dateInput.value = getCurrentDate();
                 
                 // Update active class
                 dashboardLink.classList.remove('active');
@@ -590,7 +604,8 @@
                 addMoreBtn.addEventListener('click', function() {
                     successModal.classList.remove('active');
                     healthDataForm.reset();
-                    dateInput.value = today;
+                    // Reset the date to today's date
+                    dateInput.value = getCurrentDate();
                     
                     // After adding data, show the dashboard with updated charts
                     setTimeout(() => {
